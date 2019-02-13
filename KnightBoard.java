@@ -62,60 +62,138 @@ public class KnightBoard{
   public boolean makeMove(int r, int c, int type, int count){
     if(type == 0){
       if((r + moves[0][0] >= 0 && r + moves[0][0] < board.length) &&
-         (c + moves[0][1] >= 0 && c + moves[0][1] < board[r].length)){
+         (c + moves[0][1] >= 0 && c + moves[0][1] < board[r].length) &&
+         board[r + moves[0][0]][c + moves[0][1]] == 0){
         board[r + moves[0][0]][c + moves[0][1]] = count;
         return true;
       }
     }
     if(type == 1){
       if((r + moves[1][0] >= 0 && r + moves[1][0] < board.length) &&
-         (c + moves[1][1] >= 0 && c + moves[1][1] < board[r].length)){
+         (c + moves[1][1] >= 0 && c + moves[1][1] < board[r].length) &&
+         board[r + moves[1][0]][c + moves[1][1]] == 0){
         board[r + moves[1][0]][c + moves[1][1]] = count;
         return true;
       }
     }
     if(type == 2){
       if((r + moves[2][0] >= 0 && r + moves[2][0] < board.length) &&
-         (c + moves[2][1] >= 0 && c + moves[2][1] < board[r].length)){
+         (c + moves[2][1] >= 0 && c + moves[2][1] < board[r].length) &&
+         board[r + moves[2][0]][c + moves[2][1]] == 0){
         board[r + moves[2][0]][c + moves[2][1]] = count;
         return true;
       }
     }
     if(type == 3){
       if((r + moves[3][0] >= 0 && r + moves[3][0] < board.length) &&
-         (c + moves[3][1] >= 0 && c + moves[3][1] < board[r].length)){
+         (c + moves[3][1] >= 0 && c + moves[3][1] < board[r].length) &&
+         board[r + moves[3][0]][c + moves[3][1]] == 0){
         board[r + moves[3][0]][c + moves[3][1]] = count;
         return true;
       }
     }
     if(type == 4){
       if((r + moves[4][0] >= 0 && r + moves[4][0] < board.length) &&
-         (c + moves[4][1] >= 0 && c + moves[4][1] < board[r].length)){
+         (c + moves[4][1] >= 0 && c + moves[4][1] < board[r].length) &&
+         board[r + moves[4][0]][c + moves[4][1]] == 0){
         board[r + moves[4][0]][c + moves[4][1]] = count;
         return true;
       }
     }
     if(type == 5){
       if((r + moves[5][0] >= 0 && r + moves[5][0] < board.length) &&
-         (c + moves[5][1] >= 0 && c + moves[5][1] < board[r].length)){
+         (c + moves[5][1] >= 0 && c + moves[5][1] < board[r].length) &&
+         board[r + moves[5][0]][c + moves[5][1]] == 0){
         board[r + moves[5][0]][c + moves[5][1]] = count;
         return true;
       }
     }
     if(type == 6){
       if((r + moves[6][0] >= 0 && r + moves[6][0] < board.length) &&
-         (c + moves[6][1] >= 0 && c + moves[6][1] < board[r].length)){
+         (c + moves[6][1] >= 0 && c + moves[6][1] < board[r].length) &&
+         board[r + moves[6][0]][c + moves[6][1]] == 0){
         board[r + moves[6][0]][c + moves[6][1]] = count;
         return true;
       }
     }
     if(type == 7){
       if((r + moves[7][0] >= 0 && r + moves[7][0] < board.length) &&
-         (c + moves[7][1] >= 0 && c + moves[7][1] < board[r].length)){
+         (c + moves[7][1] >= 0 && c + moves[7][1] < board[r].length) &&
+         board[r + moves[7][0]][c + moves[7][1]] == 0){
         board[r + moves[7][0]][c + moves[7][1]] = count;
         return true;
       }
     }
     return false;
   }
+
+  public boolean undoMove(int r, int c, int type){
+    if(type == 0){
+      if((r + moves[0][0] >= 0 && r + moves[0][0] < board.length) &&
+         (c + moves[0][1] >= 0 && c + moves[0][1] < board[r].length) &&
+         board[r + moves[0][0]][c + moves[0][1]] != 0){
+        board[r + moves[0][0]][c + moves[0][1]] = 0;
+        return true;
+      }
+    }
+    if(type == 1){
+      if((r + moves[1][0] >= 0 && r + moves[1][0] < board.length) &&
+         (c + moves[1][1] >= 0 && c + moves[1][1] < board[r].length) &&
+         board[r + moves[1][0]][c + moves[1][1]] != 0){
+        board[r + moves[1][0]][c + moves[1][1]] = 0;
+        return true;
+      }
+    }
+    if(type == 2){
+      if((r + moves[2][0] >= 0 && r + moves[2][0] < board.length) &&
+         (c + moves[2][1] >= 0 && c + moves[2][1] < board[r].length) &&
+         board[r + moves[2][0]][c + moves[2][1]] != 0){
+        board[r + moves[2][0]][c + moves[2][1]] = 0;
+        return true;
+      }
+    }
+    if(type == 3){
+      if((r + moves[3][0] >= 0 && r + moves[3][0] < board.length) &&
+         (c + moves[3][1] >= 0 && c + moves[3][1] < board[r].length) &&
+         board[r + moves[3][0]][c + moves[3][1]] != 0){
+        board[r + moves[3][0]][c + moves[3][1]] = 0;
+        return true;
+      }
+    }
+    if(type == 4){
+      if((r + moves[4][0] >= 0 && r + moves[4][0] < board.length) &&
+         (c + moves[4][1] >= 0 && c + moves[4][1] < board[r].length) &&
+         board[r + moves[4][0]][c + moves[4][1]] != 0){
+        board[r + moves[4][0]][c + moves[4][1]] = 0;
+        return true;
+      }
+    }
+    if(type == 5){
+      if((r + moves[5][0] >= 0 && r + moves[5][0] < board.length) &&
+         (c + moves[5][1] >= 0 && c + moves[5][1] < board[r].length) &&
+         board[r + moves[5][0]][c + moves[5][1]] != 0){
+        board[r + moves[5][0]][c + moves[5][1]] = 0;
+        return true;
+      }
+    }
+    if(type == 6){
+      if((r + moves[6][0] >= 0 && r + moves[6][0] < board.length) &&
+         (c + moves[6][1] >= 0 && c + moves[6][1] < board[r].length) &&
+         board[r + moves[6][0]][c + moves[6][1]] != 0){
+        board[r + moves[6][0]][c + moves[6][1]] = 0;
+        return true;
+      }
+    }
+    if(type == 7){
+      if((r + moves[7][0] >= 0 && r + moves[7][0] < board.length) &&
+         (c + moves[7][1] >= 0 && c + moves[7][1] < board[r].length) &&
+         board[r + moves[7][0]][c + moves[7][1]] != 0){
+        board[r + moves[7][0]][c + moves[7][1]] = 0;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  
 }
