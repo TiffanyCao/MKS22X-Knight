@@ -195,5 +195,12 @@ public class KnightBoard{
     return false;
   }
 
-  
+  public boolean isFull(){
+    for(int i = 0; i < board.length; i++){
+      for(int y = 0; y < board[i].length; y++){
+        if(board[i][y] == 0) return false;
+      }
+    }
+    return true;
+  }
 }
