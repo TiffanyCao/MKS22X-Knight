@@ -59,8 +59,15 @@ public class KnightBoard{
     return result;
   }
 
-  public boolean makeMove(int r, int c, int type, int count){
-    if(type == 0){
+  public boolean makeMove(int r, int c, int count){
+    if(r < 0 || r >= board.length || c < 0 || c >= board[0].length){
+      throw new IllegalArgumentException();
+    }
+    if(board[r][c] != 0) return false;
+    board[r][c] = count;
+    return true;
+  }
+    /*if(type == 0){
       if((r + moves[0][0] >= 0 && r + moves[0][0] < board.length) &&
          (c + moves[0][1] >= 0 && c + moves[0][1] < board[r].length) &&
          board[r + moves[0][0]][c + moves[0][1]] == 0){
@@ -125,10 +132,17 @@ public class KnightBoard{
       }
     }
     return false;
-  }
+    */
 
-  public boolean undoMove(int r, int c, int type){
-    if(type == 0){
+  public boolean undoMove(int r, int c){
+    if(r < 0 || r >= board.length || c < 0 || c >= board[0].length){
+      throw new IllegalArgumentException();
+    }
+    if(board[r][c] == 0) return false;
+    board[r][c] = 0;
+    return true;
+  }
+    /*if(type == 0){
       if((r + moves[0][0] >= 0 && r + moves[0][0] < board.length) &&
          (c + moves[0][1] >= 0 && c + moves[0][1] < board[r].length) &&
          board[r + moves[0][0]][c + moves[0][1]] != 0){
@@ -194,6 +208,7 @@ public class KnightBoard{
     }
     return false;
   }
+  */
 
   public boolean isFull(){
     for(int i = 0; i < board.length; i++){
@@ -230,11 +245,11 @@ public class KnightBoard{
   public boolean solveH(int r, int c, int count){
     if(isFull()) return true;
     for(int i = 0; i < moves.length; i++){
-      if(makeMove(r, c, i, count)){
+      if(makeMove(r, c, count)){
         if(solveH(r + moves[i][0], c + moves[i][1], count+1)){
           return true;
         }
-        undoMove(r, c, i);
+        undoMove(r, c);
       }
     }
     return false;
@@ -242,7 +257,14 @@ public class KnightBoard{
 
   public static void main(String[] args){
 
+    System.out.println("---Testing Solve---");
+    System.out.println("*printing 5X5 empty board:");
     KnightBoard one = new KnightBoard(5, 5);
     System.out.println(one);
+
+    System.out.println("\n*testing solve(1, 2)*");
+    System.out.println(one.solve(4, 4));
+    System.out.println(one);
+
   }
 }
