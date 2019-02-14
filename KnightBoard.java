@@ -60,9 +60,7 @@ public class KnightBoard{
   }
 
   public boolean makeMove(int r, int c, int count){
-    if(r < 0 || r >= board.length || c < 0 || c >= board[0].length){
-      throw new IllegalArgumentException();
-    }
+    if(r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
     if(board[r][c] != 0) return false;
     board[r][c] = count;
     return true;
@@ -135,9 +133,7 @@ public class KnightBoard{
     */
 
   public boolean undoMove(int r, int c){
-    if(r < 0 || r >= board.length || c < 0 || c >= board[0].length){
-      throw new IllegalArgumentException();
-    }
+    if(r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
     if(board[r][c] == 0) return false;
     board[r][c] = 0;
     return true;
@@ -262,7 +258,7 @@ public class KnightBoard{
     KnightBoard one = new KnightBoard(5, 5);
     System.out.println(one);
 
-    System.out.println("\n*testing solve(1, 2)*");
+    System.out.println("\n*testing solve(4, 4)*");
     System.out.println(one.solve(4, 4));
     System.out.println(one);
 
