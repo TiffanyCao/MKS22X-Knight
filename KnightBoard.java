@@ -203,4 +203,46 @@ public class KnightBoard{
     }
     return true;
   }
+
+  public boolean isEmpty(){
+    for(int i = 0; i < board.length; i++){
+        for(int y = 0; y < board[i].length; y++){
+          if(board[i][y] != 0) return false;
+        }
+    }
+    return true;
+  }
+
+
+  /**A method for solving a knight board and labels the placing
+  *should work on boards where the number of squares is under 100
+  *@return boolean if the board can be solved or not
+  */
+  public boolean solve(int startRow, int startCol){
+    if((startRow < 0 || startRow >= board.length) ||
+       (startCol < 0 || startCol >= board[0].length)){
+      throw new IllegalArgumentException();
+    }
+    if(!isEmpty()) return false;
+    return solveH(startRow, startCol, 1);
+  }
+
+  public boolean solveH(int r, int c, int count){
+    if(isFull()) return true;
+    for(int i = 0; i < moves.length; i++){
+      if(makeMove(r, c, i, count)){
+        if(solveH(r + moves[i][0], c + moves[i][1], count+1)){
+          return true;
+        }
+        undoMove(r, c, i);
+      }
+    }
+    return false;
+  }
+
+  public static void main(String[] args){
+
+    KnightBoard one = new KnightBoard(5, 5);
+    System.out.println(one);
+  }
 }
