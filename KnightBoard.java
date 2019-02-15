@@ -113,6 +113,8 @@ public class KnightBoard{
     return true;
   }
 
+  /**A method that empties the board and fills it with 0's
+  */
   public void toEmpty(){
     for(int i = 0; i < board.length; i++){
       for(int y = 0; y < board[i].length; y++){
@@ -134,26 +136,27 @@ public class KnightBoard{
        (startCol < 0 || startCol >= board[0].length)){
       throw new IllegalArgumentException();
     }
-    if(!isEmpty()) throw new IllegalStateException(); //if the board already has numbers
-    return solveH(startRow, startCol, 1); //calls to helper function
+    if(!isEmpty()) throw new IllegalStateException(); //if the board is not empty
+    return solveH(startRow, startCol, 1); //calls to helper method
   }
 
   /**A helper recursive method for solving a knight board and labels the placing
-  *@param int r
-  *@param int c
+  *@param int r is the current row
+  *@param int c is the current column
   *@param int count is the move number
   *@return boolean if the board can be solved or not
   */
   private boolean solveH(int r, int c, int count){
-    if(count > board.length*board[0].length) return true;
-    for(int i = 0; i < moves.length; i++){
+    if(count > board.length*board[0].length) return true; //if all the squares are filled
+    for(int i = 0; i < moves.length; i++){ //loops through all possible moves
       if(makeMove(r, c, count)){
-        if(solveH(r + moves[i][0], c + moves[i][1], count+1)){
+        if(solveH(r + moves[i][0], c + moves[i][1], count+1)){ //if move is possible, check next move
           return true;
         }
-        undoMove(r, c);
+        undoMove(r, c); //undo the move if it won't reach a solution
       }
     }
+    toEmpty(); //empties the board if it's unsolveable
     return false;
   }
 
@@ -171,19 +174,28 @@ public class KnightBoard{
        (startCol < 0 || startCol >= board[0].length)){
       throw new IllegalArgumentException();
     }
-    return countH(startRow, startCol, 1);
+    if(!isEmpty()) throws new IllegalStateException(); //if the board is not empty
+    return countH(startRow, startCol, 1); //calls to helper method
   }
 
+  /**A recursive helper method that counts all the possible knight board solutions,
+  *starting from the given position
+  *@param int r is current row
+  *@param int c is the current column
+  *@param int count is the move number
+  *@return int the number of solutions
+  */
   private int countH(int r, int c, int count){
-    int solutions = 0;
-    if(count > board.length*board[0].length) return 1;
-    for(int i = 0; i < moves.length; i++){
+    int solutions = 0; //counting the number of solutions
+    if(count > board.length*board[0].length) return 1; //if all spaces are filled, that counts as a solution
+    for(int i = 0; i < moves.length; i++){ //loops through all possible moves
       if(makeMove(r, c, count)){
-        solutions += countH(r + moves[i][0], c + moves[i][1], count+1);
-        undoMove(r, c);
+        solutions += countH(r + moves[i][0], c + moves[i][1], count+1); //adds 1 if there's a solution, 0 otherwise
+        undoMove(r, c); //undo the move for the testing the next possible move pattern
       }
     }
-    return solutions;
+    toEmpty(); //empties the board
+    return solutions; 
   }
 
   public static void main(String[] args){
