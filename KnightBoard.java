@@ -196,10 +196,17 @@ public class KnightBoard{
     System.out.println(one.solve(0, 0));
     System.out.println(one);
     one.toEmpty();
+    System.out.println(one);
+    System.out.println("\n*testing solve(4, 4): should return true");
+    System.out.println(one.solve(4, 4));
+    System.out.println(one);
+    one.toEmpty();
 
     System.out.println("\n*testing countSolutions(0, 0): should return 2432");
     System.out.println(one.countSolutions(0, 0));
-
+    one.toEmpty();
+    System.out.println("\n*testing countSolutions(4, 4): should return 2432");
+    System.out.println(one.countSolutions(4, 4));
 
   }
 }
