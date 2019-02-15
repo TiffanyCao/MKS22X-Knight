@@ -137,7 +137,7 @@ public class KnightBoard{
   *@return boolean if the board can be solved or not
   */
   private boolean solveH(int r, int c, int count){
-    if(isFull()) return true;
+    if(count > board.length*board[0].length) return true;
     for(int i = 0; i < moves.length; i++){
       if(makeMove(r, c, count)){
         if(solveH(r + moves[i][0], c + moves[i][1], count+1)){
@@ -147,5 +147,17 @@ public class KnightBoard{
       }
     }
     return false;
+  }
+
+  public static void main(String[] args){
+
+    KnightBoard one = new KnightBoard(5, 5);
+    System.out.println("---Testing Solve---");
+    System.out.println("*printing 5x5 board:");
+    System.out.println(one);
+    System.out.println("\n*testing solve(0, 0): should return true");
+    System.out.println(one.solve(0, 0));
+    System.out.println(one);
+
   }
 }
