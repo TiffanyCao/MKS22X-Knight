@@ -113,16 +113,6 @@ public class KnightBoard{
     return true;
   }
 
-  /**A method that empties the board and fills it with 0's
-  */
-  public void toEmpty(){
-    for(int i = 0; i < board.length; i++){
-      for(int y = 0; y < board[i].length; y++){
-        board[i][y] = 0;
-      }
-    }
-  }
-
   /**A method for solving a knight board and labels the placing
   *should work on boards where the number of squares is under 100
   *@param int startRow
@@ -136,7 +126,9 @@ public class KnightBoard{
        (startCol < 0 || startCol >= board[0].length)){
       throw new IllegalArgumentException();
     }
-    if(!isEmpty()) throw new IllegalStateException(); //if the board is not empty
+    if(!isEmpty()){ //if the board is not empty
+      throw new IllegalStateException();
+    }
     return solveH(startRow, startCol, 1); //calls to helper method
   }
 
@@ -147,7 +139,7 @@ public class KnightBoard{
   *@return boolean if the board can be solved or not
   */
   private boolean solveH(int r, int c, int count){
-    if(count > board.length*board[0].length) return true; //if all the squares are filled
+    if(count > (board.length*board[0].length)) return true; //if all the squares are filled
     for(int i = 0; i < moves.length; i++){ //loops through all possible moves
       if(makeMove(r, c, count)){
         if(solveH(r + moves[i][0], c + moves[i][1], count+1)){ //if move is possible, check next move
@@ -156,7 +148,6 @@ public class KnightBoard{
         undoMove(r, c); //undo the move if it won't reach a solution
       }
     }
-    toEmpty(); //empties the board if it's unsolveable
     return false;
   }
 
@@ -174,7 +165,7 @@ public class KnightBoard{
        (startCol < 0 || startCol >= board[0].length)){
       throw new IllegalArgumentException();
     }
-    if(!isEmpty()) throws new IllegalStateException(); //if the board is not empty
+    if(!isEmpty()) throw new IllegalStateException(); //if the board is not empty
     return countH(startRow, startCol, 1); //calls to helper method
   }
 
@@ -187,15 +178,14 @@ public class KnightBoard{
   */
   private int countH(int r, int c, int count){
     int solutions = 0; //counting the number of solutions
-    if(count > board.length*board[0].length) return 1; //if all spaces are filled, that counts as a solution
+    if(count > (board.length*board[0].length)) return 1; //if all spaces are filled, that counts as a solution
     for(int i = 0; i < moves.length; i++){ //loops through all possible moves
       if(makeMove(r, c, count)){
         solutions += countH(r + moves[i][0], c + moves[i][1], count+1); //adds 1 if there's a solution, 0 otherwise
         undoMove(r, c); //undo the move for the testing the next possible move pattern
       }
     }
-    toEmpty(); //empties the board
-    return solutions; 
+    return solutions;
   }
 
   public static void main(String[] args){
@@ -207,18 +197,16 @@ public class KnightBoard{
     System.out.println("\n*testing solve(0, 0): should return true");
     System.out.println(one.solve(0, 0));
     System.out.println(one);
-    one.toEmpty();
-    System.out.println(one);
+    one.empty();
+
     System.out.println("\n*testing solve(4, 4): should return true");
     System.out.println(one.solve(4, 4));
     System.out.println(one);
-    one.toEmpty();
+    one.empty();
 
     System.out.println("\n*testing countSolutions(0, 0): should return 2432");
     System.out.println(one.countSolutions(0, 0));
-    one.toEmpty();
     System.out.println("\n*testing countSolutions(4, 4): should return 2432");
     System.out.println(one.countSolutions(4, 4));
-
   }
 }
