@@ -9,6 +9,7 @@ public class KnightBoard{
                            {2, 1},
                            {-1, 2},
                            {1, 2}};
+  private int[][] opt;
 
   /**A constructor of the knight board
   *@param int startingRows
@@ -20,6 +21,8 @@ public class KnightBoard{
     if(startingRows < 0 || startingCols < 0) throw new IllegalArgumentException();
     board = new int[startingRows][startingCols];
     empty(); //make all 0's
+    opt = new int[startingRows][startingCols];
+    optimize();
   }
 
   /**A method that clears the board and makes it all 0's
@@ -30,6 +33,52 @@ public class KnightBoard{
         board[i][y] = 0;
       }
     }
+  }
+
+  /**A method that fills in the optimizing board with the number of possible moves for each square
+  */
+  public void optimize(){
+    int row = opt.length;
+    int col = opt[0].length;
+    if(row == col && row > 3){ //shortcut to optimizing board if the board is square and greater than a 3x3
+      for(int i = 0; i < opt.length; i++){
+        for(int y = 0; y < opt[i].length; y++){
+          if((i == 0 || i == row - 1) && (y == 0 || y == col - 1)){ //the squares with 2 moves
+            opt[i][y] = 2;
+          }else if(((i == 0  || i == row - 1) && (y == 1 || y == col - 2)) ||
+                   ((i == 1 || i == row - 2) && (y == 0 || y == col - 1))){ //the squares with 3 moves
+            opt[i][y] = 3;
+          }else if((i == 0 || i == row - 1 || y == 0 || y == col - 1) ||
+                   ((i == 1 || i == row - 2) && (y == 1 || y == col - 2))){ //the squares with 3 moves
+            opt[i][y] = 4;
+          }else if(i == 1 || i == row - 2 || y == 1 || y == col - 2){ //the squares with 4 moves
+            opt[i][y] = 6;
+          }else{ //the rest of the squares have 8 moves
+            opt[i][y] = 8;
+          }
+        }
+      }
+    }else{ //all the other boards use this
+      for(int i = 0; i < opt.length; i++){
+        for(int y = 0; y < opt[i].length; y++){
+          opt[i][y] = possMoves(i, y);
+        }
+      }
+    }
+  }
+
+  /**A method that figures out the number of possible moves from a given square
+  *@return the number of possible moves
+  */
+  public int possMoves(int r, int c){
+    int count = 0;
+    for(int i = 0; i < moves.length; i++){ //loops through all moves to see if it's possible
+      if((r + moves[i][0] >= 0) && (r + moves[i][0] < opt.length) &&
+         (c + moves[i][1] >= 0) && (c + moves[i][1] < opt[r].length)){
+        count++;
+      }
+    }
+    return count;
   }
 
   /**A method that prints out the board
@@ -55,6 +104,20 @@ public class KnightBoard{
           result += " " + board[i][y];
           if(y == board[i].length - 1) result += "\n";
         }
+      }
+    }
+    return result;
+  }
+
+  /**A method that prints out the optimizing board which contains the possible moves for each square
+  *@return the board in string form
+  */
+  public String optBoard(){
+    String result = "";
+    for(int i = 0; i < opt.length; i++){
+      for(int y = 0; y < opt[i].length; y++){
+        result += opt[i][y] + " ";
+        if(y == opt[i].length - 1) result += "\n";
       }
     }
     return result;
@@ -189,24 +252,23 @@ public class KnightBoard{
   }
 
   public static void main(String[] args){
+    KnightBoard b1 = new KnightBoard(8, 8);
+    System.out.println(b1.optBoard());
 
-    KnightBoard one = new KnightBoard(5, 5);
-    System.out.println("---Testing Solve---");
-    System.out.println("*printing 5x5 board:");
-    System.out.println(one);
-    System.out.println("\n*testing solve(0, 0): should return true");
-    System.out.println(one.solve(0, 0));
-    System.out.println(one);
-    one.empty();
+    KnightBoard b2 = new KnightBoard(7, 7);
+    System.out.println(b2.optBoard());
 
-    System.out.println("\n*testing solve(4, 4): should return true");
-    System.out.println(one.solve(4, 4));
-    System.out.println(one);
-    one.empty();
+    KnightBoard b3 = new KnightBoard(4, 4);
+    System.out.println(b3.optBoard());
 
-    System.out.println("\n*testing countSolutions(0, 0): should return 2432");
-    System.out.println(one.countSolutions(0, 0));
-    System.out.println("\n*testing countSolutions(4, 4): should return 2432");
-    System.out.println(one.countSolutions(4, 4));
+    KnightBoard b4 = new KnightBoard(5, 5);
+    System.out.println(b4.optBoard());
+
+    KnightBoard b5 = new KnightBoard(3, 4);
+    System.out.println(b5.optBoard());
+
+    KnightBoard b6 = new KnightBoard(3, 3);
+    System.out.println(b6.optBoard());
   }
+
 }
