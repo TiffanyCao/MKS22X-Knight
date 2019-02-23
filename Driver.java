@@ -73,5 +73,28 @@ public class Driver{
     //took too long- System.out.println("7x10 countSolutions(0, 0): " + seven.countSolutions(0, 0));
     //took too long- System.out.println("8x4 countSolutions(0, 0): " + eight.countSolutions(0, 0));
 
+    four.empty();
+    five.empty();
+    //System.out.println(five.countSolutions2(0, 0));
+    System.out.println(four.optBoard());
+    System.out.println(four);
+    System.out.println(four.optM(four.opt[1][2].move));
+    System.out.println(four.optM(four.opt[2][3].move));
+    System.out.println(four.findS(four.opt[1][2].move));
+    System.out.println(four.findS(four.opt[2][3].move));
+    System.out.println(four.optM(four.sort(1, 2, four.opt[1][2].move)));
+    System.out.println(four.optM(four.opt[1][2].move));
+    System.out.println(four.optM(four.sort(2, 3, four.opt[2][3].move)));
+    System.out.println(four.solve2(0, 0));
+    System.out.println(four);
+    System.out.println(four.possMoves(0, 0));
+    System.out.println(four.optM(0, 0));
+
+    five.empty();
+    System.out.println(five.optM(0, 0));
+    System.out.println(five.solve2(0, 0));
+    System.out.println(five);
+    System.out.println(five.possMoves(0, 0));
+    System.out.println(five.optM(0, 0));
   }
 }
