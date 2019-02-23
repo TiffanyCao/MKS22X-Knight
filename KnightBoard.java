@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class KnightBoard{
 
   private int[][] board;
@@ -9,7 +11,7 @@ public class KnightBoard{
                            {2, 1},
                            {-1, 2},
                            {1, 2}};
-  private int[][] opt;
+  public Optimize[][] opt;
 
   /**A constructor of the knight board
   *@param int startingRows
@@ -21,8 +23,8 @@ public class KnightBoard{
     if(startingRows < 0 || startingCols < 0) throw new IllegalArgumentException();
     board = new int[startingRows][startingCols];
     empty(); //make all 0's
-    opt = new int[startingRows][startingCols];
-    optimize();
+    opt = new Optimize[startingRows][startingCols];
+    optimize(); //fill in the number of moves possible for each square
   }
 
   /**A method that clears the board and makes it all 0's
@@ -40,45 +42,96 @@ public class KnightBoard{
   public void optimize(){
     int row = opt.length;
     int col = opt[0].length;
+    for(int i = 0; i < row; i++){ //initialize the opt board
+      for(int y = 0; y < col; y++){
+        opt[i][y] = new Optimize();
+      }
+    }
     if(row == col && row > 3){ //shortcut to optimizing board if the board is square and greater than a 3x3
       for(int i = 0; i < opt.length; i++){
         for(int y = 0; y < opt[i].length; y++){
           if((i == 0 || i == row - 1) && (y == 0 || y == col - 1)){ //the squares with 2 moves
-            opt[i][y] = 2;
+            opt[i][y].numMoves = 2;
+            possMoves(i, y);
           }else if(((i == 0  || i == row - 1) && (y == 1 || y == col - 2)) ||
                    ((i == 1 || i == row - 2) && (y == 0 || y == col - 1))){ //the squares with 3 moves
-            opt[i][y] = 3;
+            opt[i][y].numMoves = 3;
+            possMoves(i, y);
           }else if((i == 0 || i == row - 1 || y == 0 || y == col - 1) ||
                    ((i == 1 || i == row - 2) && (y == 1 || y == col - 2))){ //the squares with 3 moves
-            opt[i][y] = 4;
+            opt[i][y].numMoves = 4;
+            possMoves(i, y);
           }else if(i == 1 || i == row - 2 || y == 1 || y == col - 2){ //the squares with 4 moves
-            opt[i][y] = 6;
+            opt[i][y].numMoves = 6;
+            possMoves(i, y);
           }else{ //the rest of the squares have 8 moves
-            opt[i][y] = 8;
+            opt[i][y].numMoves = 8;
+            possMoves(i, y);
           }
         }
       }
     }else{ //all the other boards use this
       for(int i = 0; i < opt.length; i++){
         for(int y = 0; y < opt[i].length; y++){
-          opt[i][y] = possMoves(i, y);
+          opt[i][y].numMoves = possMoves(i, y);
         }
       }
     }
   }
 
   /**A method that figures out the number of possible moves from a given square
+  *Each possible move is added to a list of possible moves for that square
   *@return the number of possible moves
   */
   public int possMoves(int r, int c){
     int count = 0;
+    ArrayList<Integer> m = new ArrayList<Integer>();
     for(int i = 0; i < moves.length; i++){ //loops through all moves to see if it's possible
       if((r + moves[i][0] >= 0) && (r + moves[i][0] < opt.length) &&
-         (c + moves[i][1] >= 0) && (c + moves[i][1] < opt[r].length)){
+         (c + moves[i][1] >= 0) && (c + moves[i][1] < opt[r].length) &&
+         (board[r + moves[i][0]][c + moves[i][1]] == 0)){
         count++;
+        m.add(i);
       }
     }
+    opt[r][c].move = m;
+    sort(r, c);
     return count;
+  }
+
+  /**A method that sorts a list of possible moves by looking at the number of moves the resulting square has
+  *@param int r is the row
+  *@param int c is the column
+  */
+  public void sort(int r, int c){
+    ArrayList<Integer> a = opt[r][c].move; //list of possible moves
+    int size = a.size();
+    ArrayList<Integer> b = new ArrayList<Integer>();
+    for(int i = 0; i < size; i++){
+      int index = findS(r, c, a); //finds the move that will bring the knight closer to the edge
+      b.add(a.get(index)); //add that to a new list
+      a.remove(index); //remove that from the current
+    }
+    opt[r][c].move = b; //make the new list the final list of possible moves, now in order
+  }
+
+  /**A helper method that finds the move that will bring the knight closer to the edge
+  *This is done by using the fact that squares closer to the edge have fewer possible moves
+  *@param int row
+  *@param int col
+  *@param ArrayList<Integer> l is the current list of possible moves
+  *@return int the index of the move that will bring the knight closest to the edge
+  */
+  public int findS(int row, int col, ArrayList<Integer> l){
+    int index = 0;
+    for(int i = 1; i < l.size(); i++){ //loops through list
+      if(opt[row+moves[l.get(i)][0]][col+moves[l.get(i)][1]].numMoves <
+         opt[row+moves[l.get(index)][0]][col+moves[l.get(index)][1]].numMoves){
+        index = i; //if the number of moves at the resulting square of this move is smaller than the number of moves
+                   //at the resulting square of the move at the previous index
+      }
+    }
+    return index; //returns the index of the move that will bring the knight closest to the edge
   }
 
   /**A method that prints out the board
@@ -116,7 +169,7 @@ public class KnightBoard{
     String result = "";
     for(int i = 0; i < opt.length; i++){
       for(int y = 0; y < opt[i].length; y++){
-        result += opt[i][y] + " ";
+        result += opt[i][y].numMoves + " ";
         if(y == opt[i].length - 1) result += "\n";
       }
     }
@@ -214,6 +267,30 @@ public class KnightBoard{
     return false;
   }
 
+  public boolean solve2(int startRow, int startCol){
+    if((startRow < 0 || startRow >= board.length) ||
+       (startCol < 0 || startCol >= board[0].length)){
+      throw new IllegalArgumentException();
+    }
+    if(!isEmpty()){ //if the board is not empty
+      throw new IllegalStateException();
+    }
+    return solveH2(startRow, startCol, 1); //calls to helper method
+  }
+
+  private boolean solveH2(int r, int c, int count){
+    if(count > (board.length*board[0].length)) return true; //if all the squares are filled
+    for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
+      if(makeMove(r, c, count)){
+        if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
+          return true;
+        }
+        undoMove(r, c); //undo the move if it won't reach a solution
+      }
+    }
+    return false;
+  }
+
   /**A method that counts the number of possible solutions of knight board from a given starting position
   *@throws IllegalStateException when the board contains non-zero values.
   *@throws IllegalArgumentException when either parameter is negative
@@ -254,6 +331,7 @@ public class KnightBoard{
   public static void main(String[] args){
     KnightBoard b1 = new KnightBoard(8, 8);
     System.out.println(b1.optBoard());
+    System.out.println(b1.opt[4][2].move);
 
     KnightBoard b2 = new KnightBoard(7, 7);
     System.out.println(b2.optBoard());
