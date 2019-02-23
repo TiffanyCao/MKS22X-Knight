@@ -96,6 +96,7 @@ public class KnightBoard{
     }
     opt[r][c].move = m;
     sort(r, c);
+    opt[r][c].numMoves = count;
     return count;
   }
 
@@ -280,6 +281,11 @@ public class KnightBoard{
 
   private boolean solveH2(int r, int c, int count){
     if(count > (board.length*board[0].length)) return true; //if all the squares are filled
+    for(int i = 0; i < board.length; i++){
+      for(int y = 0; y < board[i].length; y++){
+        possMoves(i, y);
+      }
+    }
     for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
       if(makeMove(r, c, count)){
         if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
@@ -327,6 +333,35 @@ public class KnightBoard{
     }
     return solutions;
   }
+
+
+  public int countSolutions2(int startRow, int startCol){
+    if(!isEmpty()) throw new IllegalStateException();
+    if((startRow < 0 || startRow >= board.length) ||
+       (startCol < 0 || startCol >= board[0].length)){
+      throw new IllegalArgumentException();
+    }
+    if(!isEmpty()) throw new IllegalStateException(); //if the board is not empty
+    return countH2(startRow, startCol, 1); //calls to helper method
+  }
+
+  private int countH2(int r, int c, int count){
+    int solutions = 0; //counting the number of solutions
+    for(int i = 0; i < board.length; i++){
+      for(int y = 0; y < board[i].length; y++){
+        possMoves(i, y);
+      }
+    }
+    if(count > (board.length*board[0].length)) return 1; //if all spaces are filled, that counts as a solution
+    for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
+      if(makeMove(r, c, count)){
+        solutions += countH2(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1); //adds 1 if there's a solution, 0 otherwise
+        undoMove(r, c); //undo the move for the testing the next possible move pattern
+      }
+    }
+    return solutions;
+  }
+
 
   public static void main(String[] args){
     KnightBoard b1 = new KnightBoard(8, 8);
