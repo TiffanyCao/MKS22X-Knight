@@ -25,6 +25,11 @@ public class KnightBoard{
     empty(); //make all 0's
     opt = new Optimize[startingRows][startingCols];
     optimize(); //fill in the number of moves possible for each square
+    for(int i = 0; i < opt.length; i++){
+      for(int y = 0; y < opt[i].length; y++){
+        sort(i, y, opt[i][y].move); //makes all the lists in order of closest to farthest from edge
+      }
+    }
   }
 
   /**A method that clears the board and makes it all 0's
@@ -73,7 +78,7 @@ public class KnightBoard{
     }else{ //all the other boards use this
       for(int i = 0; i < opt.length; i++){
         for(int y = 0; y < opt[i].length; y++){
-          opt[i][y].numMoves = possMoves(i, y);
+          possMoves(i, y); //finds all possible moves
         }
       }
     }
@@ -81,21 +86,23 @@ public class KnightBoard{
 
   /**A method that figures out the number of possible moves from a given square
   *Each possible move is added to a list of possible moves for that square
+  *@param int r is the current row
+  *@param int c is the current column
   *@return the number of possible moves
   */
   public int possMoves(int r, int c){
     int count = 0;
-    ArrayList<Integer> m = new ArrayList<Integer>();
+    ArrayList<int[]> m = new ArrayList<int[]>();
     for(int i = 0; i < moves.length; i++){ //loops through all moves to see if it's possible
       if((r + moves[i][0] >= 0) && (r + moves[i][0] < opt.length) &&
          (c + moves[i][1] >= 0) && (c + moves[i][1] < opt[r].length) &&
          (board[r + moves[i][0]][c + moves[i][1]] == 0)){
         count++;
-        m.add(i);
+        int[] temp = {r + moves[i][0], c + moves[i][1]}; //adds coordinate to list
+        m.add(temp);
       }
     }
     opt[r][c].move = m;
-    sort(r, c);
     opt[r][c].numMoves = count;
     return count;
   }
@@ -103,36 +110,63 @@ public class KnightBoard{
   /**A method that sorts a list of possible moves by looking at the number of moves the resulting square has
   *@param int r is the row
   *@param int c is the column
+  *@return ArrayList<int[]> the ordered list, from closest to farthest from the edge
   */
-  public void sort(int r, int c){
-    ArrayList<Integer> a = opt[r][c].move; //list of possible moves
+  public ArrayList<int[]> sort(int r, int c, ArrayList<int[]> a){
     int size = a.size();
-    ArrayList<Integer> b = new ArrayList<Integer>();
-    for(int i = 0; i < size; i++){
-      int index = findS(r, c, a); //finds the move that will bring the knight closer to the edge
-      b.add(a.get(index)); //add that to a new list
+    ArrayList<int[]> b = new ArrayList<int[]>();
+    while(a.size() != 0){
+      int index = findS(a); //finds the move that will bring the knight closer to the edge
+      int[] temp = a.get(index);
+      b.add(temp); //add that to a new list
       a.remove(index); //remove that from the current
     }
-    opt[r][c].move = b; //make the new list the final list of possible moves, now in order
+    opt[r][c].move = b; //set the variable to the new ordered list
+    return b;
   }
 
   /**A helper method that finds the move that will bring the knight closer to the edge
   *This is done by using the fact that squares closer to the edge have fewer possible moves
-  *@param int row
-  *@param int col
   *@param ArrayList<Integer> l is the current list of possible moves
   *@return int the index of the move that will bring the knight closest to the edge
   */
-  public int findS(int row, int col, ArrayList<Integer> l){
+  public int findS(ArrayList<int[]> l){
     int index = 0;
     for(int i = 1; i < l.size(); i++){ //loops through list
-      if(opt[row+moves[l.get(i)][0]][col+moves[l.get(i)][1]].numMoves <
-         opt[row+moves[l.get(index)][0]][col+moves[l.get(index)][1]].numMoves){
+      int[] temp = l.get(index);
+      int[] temp2 = l.get(i);
+      if(opt[temp2[0]][temp2[1]].numMoves < opt[temp[0]][temp[1]].numMoves){
         index = i; //if the number of moves at the resulting square of this move is smaller than the number of moves
                    //at the resulting square of the move at the previous index
       }
     }
     return index; //returns the index of the move that will bring the knight closest to the edge
+  }
+
+  /**A method that prints out the ArrayList<int[]> based on which square is given
+  *the ArrayList<int[]> is the coordinate of possible moves, ordered from closest to farthest from the edge
+  *@return String
+  */
+  public String optM(int r, int c){
+    ArrayList<int[]> temp = opt[r][c].move;
+    String result = "";
+    for(int i = 0; i < temp.size(); i++){
+      int[] tem = temp.get(i);
+      result += "["+tem[0]+", "+tem[1]+"]\n"; //coordinates
+    }
+    return result;
+  }
+
+  /**A method that prints out the ArrayList<int[]> given
+  *@return String
+  */
+  public String optM(ArrayList<int[]> l){
+    String result = "";
+    for(int i = 0; i < l.size(); i++){
+      int[] tem = l.get(i);
+      result += "["+tem[0]+", "+tem[1]+"]\n"; //coordinates
+    }
+    return result;
   }
 
   /**A method that prints out the board
@@ -288,10 +322,17 @@ public class KnightBoard{
     }
     for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
       if(makeMove(r, c, count)){
-        if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
+        //if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
+        int[] temp = opt[r][c].move.get(i);
+        if(solveH(temp[0], temp[1], count+1)){
           return true;
         }
         undoMove(r, c); //undo the move if it won't reach a solution
+        for(int x = 0; i < board.length; x++){
+          for(int y = 0; y < board[i].length; y++){
+            possMoves(x, y);
+          }
+        }
       }
     }
     return false;
@@ -334,7 +375,7 @@ public class KnightBoard{
     return solutions;
   }
 
-
+/*
   public int countSolutions2(int startRow, int startCol){
     if(!isEmpty()) throw new IllegalStateException();
     if((startRow < 0 || startRow >= board.length) ||
@@ -361,7 +402,7 @@ public class KnightBoard{
     }
     return solutions;
   }
-
+*/
 
   public static void main(String[] args){
     KnightBoard b1 = new KnightBoard(8, 8);
