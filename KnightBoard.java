@@ -258,6 +258,20 @@ public class KnightBoard{
     return true;
   }
 
+  /**A helping method that removes a move for the knight
+  *it unmarks the square on the board with a 0
+  *@param int r is the current row
+  *@param int c is the current column
+  *@return boolean false if the square is out of bounds or doesn't have a number (is 0)
+  *                true if unmarking is possible
+  */
+  public boolean undoMove(int r, int c){
+    if(r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
+    if(board[r][c] == 0) return false;
+    board[r][c] = 0;
+    return true;
+  }
+
   /**A helping method that makes a move for the knight for an optimized board
   *it marks the square on the board with the move number
   *@param int r is the current row
@@ -276,20 +290,6 @@ public class KnightBoard{
         sort(i, y, opt[i][y].move);
       }
     }
-    return true;
-  }
-
-  /**A helping method that removes a move for the knight
-  *it unmarks the square on the board with a 0
-  *@param int r is the current row
-  *@param int c is the current column
-  *@return boolean false if the square is out of bounds or doesn't have a number (is 0)
-  *                true if unmarking is possible
-  */
-  public boolean undoMove(int r, int c){
-    if(r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
-    if(board[r][c] == 0) return false;
-    board[r][c] = 0;
     return true;
   }
 
@@ -406,7 +406,7 @@ public class KnightBoard{
       if(makeMove2(r, c, count)){
         //if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
         int[] temp = opt[r][c].move.get(i);
-        if(solveH(temp[0], temp[1], count+1)){
+        if(solveH2(temp[0], temp[1], count+1)){
           return true;
         }
         undoMove2(r, c); //undo the move if it won't reach a solution
