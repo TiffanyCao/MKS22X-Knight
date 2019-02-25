@@ -7,16 +7,16 @@ public class Driver{
     System.out.println("\n*testing solve(0, 0): should return true");
     System.out.println(k.solve(0, 0));
     System.out.println(k);
-    k.empty();
+    k.reset();
 
     System.out.println("\n*testing solve(4, 4): should return true");
     System.out.println(k.solve(4, 4));
     System.out.println(k);
-    k.empty();
+    k.reset();
 
     System.out.println("\n*testing countSolutions(0, 0): should return 2432");
     System.out.println(k.countSolutions(0, 0));
-    k.empty();
+    k.reset();
     System.out.println("\n*testing countSolutions(4, 4): should return 2432");
     System.out.println(k.countSolutions(4, 4));
     */
@@ -30,7 +30,7 @@ public class Driver{
     KnightBoard seven = new KnightBoard(7, 10);
     KnightBoard eight = new KnightBoard(8, 4);
 
-    System.out.println("*printing 1x1:\n" + one);
+    /*System.out.println("*printing 1x1:\n" + one);
     System.out.println("*printing solve(0,0):\n" + one.solve(0,0));
     System.out.println(one);
     System.out.println("*printing 2x4:\n" + two);
@@ -55,14 +55,14 @@ public class Driver{
     System.out.println("*printing solve(0,0):\n" + eight.solve(0,0));
     System.out.println(eight);
 
-    one.empty();
-    two.empty();
-    three.empty();
-    four.empty();
-    five.empty();
-    six.empty();
-    seven.empty();
-    eight.empty();
+    one.reset();
+    two.reset();
+    three.reset();
+    four.reset();
+    five.reset();
+    six.reset();
+    seven.reset();
+    eight.reset();
 
     System.out.println("1x1 countSolutions(0, 0): " + one.countSolutions(0, 0));
     System.out.println("2x4 countSolutions(0, 0): " + two.countSolutions(0, 0));
@@ -72,29 +72,62 @@ public class Driver{
     System.out.println("6x3 countSolutions(0, 0): " + six.countSolutions(0, 0));
     //took too long- System.out.println("7x10 countSolutions(0, 0): " + seven.countSolutions(0, 0));
     //took too long- System.out.println("8x4 countSolutions(0, 0): " + eight.countSolutions(0, 0));
-
-    four.empty();
-    five.empty();
+*/
+    four.reset();
+    five.reset();
     //System.out.println(five.countSolutions2(0, 0));
     System.out.println(four.optBoard());
+    System.out.println(four.optOriginal());
     System.out.println(four);
+    System.out.println(four.optM(four.opt[0][0].move));
     System.out.println(four.optM(four.opt[1][2].move));
+
+    four.makeMove2(0, 0, 1);
+    System.out.println(four);
+    System.out.println(four.optBoard());
+    System.out.println(four.optOriginal());
+
+    System.out.println(four.optM(four.opt[1][2].move));
+    System.out.println(four.optM(four.sort(1, 2, four.opt[1][2].move)));
     System.out.println(four.optM(four.opt[2][3].move));
+    System.out.println(four.optM(four.sort(2, 3, four.opt[2][3].move)));
     System.out.println(four.findS(four.opt[1][2].move));
     System.out.println(four.findS(four.opt[2][3].move));
-    System.out.println(four.optM(four.sort(1, 2, four.opt[1][2].move)));
-    System.out.println(four.optM(four.opt[1][2].move));
-    System.out.println(four.optM(four.sort(2, 3, four.opt[2][3].move)));
+    System.out.println(four.optM(four.opt[3][3].move));
+    System.out.println(four.optM(four.sort(3, 3, four.opt[3][3].move)));
+    System.out.println(four.findS(four.opt[3][3].move));
+    four.makeMove2(2, 1, 2);
+    System.out.println(four.optBoard());
+    System.out.println(four);
+    System.out.println(four.optM(four.opt[0][0].move));
+    System.out.println(four.optM(four.opt[3][3].move));
+    four.undoMove2(2, 1);
+    System.out.println(four);
+    System.out.println(four.optM(four.opt[0][0].move));
+    System.out.println(four.optM(four.opt[3][3].move));
+    System.out.println(four.optBoard());
+    four.makeMove2(1, 2, 2);
+    System.out.println(four);
+    System.out.println(four.optBoard());
+    System.out.println(four.optM(four.opt[0][0].move));
+    four.makeMove2(2, 1, 3);
+    System.out.println(four);
+    System.out.println(four.optM(four.opt[0][0].move));
+
+    four.reset();
+    System.out.println(four);
+    System.out.println(four.optBoard());
+    System.out.println(four.optM(four.opt[0][0].move));
     System.out.println(four.solve2(0, 0));
     System.out.println(four);
-    System.out.println(four.possMoves(0, 0));
-    System.out.println(four.optM(0, 0));
+    System.out.println(four.optBoard());
+    System.out.println(four.optM(four.opt[0][0].move));
 
-    five.empty();
+    System.out.println(five);
     System.out.println(five.optM(0, 0));
     System.out.println(five.solve2(0, 0));
     System.out.println(five);
-    System.out.println(five.possMoves(0, 0));
+    System.out.println(five.optBoard());
     System.out.println(five.optM(0, 0));
   }
 }
