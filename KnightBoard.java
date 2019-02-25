@@ -22,7 +22,7 @@ public class KnightBoard{
   public KnightBoard(int startingRows,int startingCols){
     if(startingRows < 0 || startingCols < 0) throw new IllegalArgumentException();
     board = new int[startingRows][startingCols];
-    empty(); //make all 0's
+    makeZero(); //make all 0's
     opt = new Optimize[startingRows][startingCols];
     optimize(); //fill in the number of moves possible for each square
     for(int i = 0; i < opt.length; i++){
@@ -34,10 +34,23 @@ public class KnightBoard{
 
   /**A method that clears the board and makes it all 0's
   */
-  public void empty(){
+  public void makeZero(){
     for(int i = 0; i < board.length; i++){
       for(int y = 0; y < board[i].length; y++){
         board[i][y] = 0;
+      }
+    }
+  }
+
+  /**A method that clears the board and makes it all 0's and resets the optimization
+  */
+  public void reset(){
+    makeZero(); //makes zero
+    for(int i = 0; i < board.length; i++){
+      for(int y = 0; y < board[i].length; y++){
+        opt[i][y].numMoves = opt[i][y].optOriginal;
+        possMoves(i, y);
+        sort(i, y, opt[i][y].move);
       }
     }
   }
@@ -57,20 +70,25 @@ public class KnightBoard{
         for(int y = 0; y < opt[i].length; y++){
           if((i == 0 || i == row - 1) && (y == 0 || y == col - 1)){ //the squares with 2 moves
             opt[i][y].numMoves = 2;
+            opt[i][y].optOriginal = 2;
             possMoves(i, y);
           }else if(((i == 0  || i == row - 1) && (y == 1 || y == col - 2)) ||
                    ((i == 1 || i == row - 2) && (y == 0 || y == col - 1))){ //the squares with 3 moves
             opt[i][y].numMoves = 3;
+            opt[i][y].optOriginal = 3;
             possMoves(i, y);
           }else if((i == 0 || i == row - 1 || y == 0 || y == col - 1) ||
                    ((i == 1 || i == row - 2) && (y == 1 || y == col - 2))){ //the squares with 3 moves
             opt[i][y].numMoves = 4;
+            opt[i][y].optOriginal = 4;
             possMoves(i, y);
           }else if(i == 1 || i == row - 2 || y == 1 || y == col - 2){ //the squares with 4 moves
             opt[i][y].numMoves = 6;
+            opt[i][y].optOriginal = 6;
             possMoves(i, y);
           }else{ //the rest of the squares have 8 moves
             opt[i][y].numMoves = 8;
+            opt[i][y].optOriginal = 8;
             possMoves(i, y);
           }
         }
@@ -78,7 +96,7 @@ public class KnightBoard{
     }else{ //all the other boards use this
       for(int i = 0; i < opt.length; i++){
         for(int y = 0; y < opt[i].length; y++){
-          possMoves(i, y); //finds all possible moves
+          opt[i][y].optOriginal = possMoves(i, y); //finds all possible moves
         }
       }
     }
@@ -88,7 +106,7 @@ public class KnightBoard{
   *Each possible move is added to a list of possible moves for that square
   *@param int r is the current row
   *@param int c is the current column
-  *@return the number of possible moves
+  *@return the number of possible moves that can be made
   */
   public int possMoves(int r, int c){
     int count = 0;
@@ -135,7 +153,7 @@ public class KnightBoard{
     for(int i = 1; i < l.size(); i++){ //loops through list
       int[] temp = l.get(index);
       int[] temp2 = l.get(i);
-      if(opt[temp2[0]][temp2[1]].numMoves < opt[temp[0]][temp[1]].numMoves){
+      if(opt[temp2[0]][temp2[1]].optOriginal < opt[temp[0]][temp[1]].optOriginal){
         index = i; //if the number of moves at the resulting square of this move is smaller than the number of moves
                    //at the resulting square of the move at the previous index
       }
@@ -197,7 +215,7 @@ public class KnightBoard{
     return result;
   }
 
-  /**A method that prints out the optimizing board which contains the possible moves for each square
+  /**A method that prints out the board which contains the current number of available moves for each square
   *@return the board in string form
   */
   public String optBoard(){
@@ -205,6 +223,20 @@ public class KnightBoard{
     for(int i = 0; i < opt.length; i++){
       for(int y = 0; y < opt[i].length; y++){
         result += opt[i][y].numMoves + " ";
+        if(y == opt[i].length - 1) result += "\n";
+      }
+    }
+    return result;
+  }
+
+  /**A method that prints out the original optimizing board which contains the original possible moves for each square
+  *@return the board in string form
+  */
+  public String optOriginal(){
+    String result = "";
+    for(int i = 0; i < opt.length; i++){
+      for(int y = 0; y < opt[i].length; y++){
+        result += opt[i][y].optOriginal + " ";
         if(y == opt[i].length - 1) result += "\n";
       }
     }
@@ -226,6 +258,27 @@ public class KnightBoard{
     return true;
   }
 
+  /**A helping method that makes a move for the knight for an optimized board
+  *it marks the square on the board with the move number
+  *@param int r is the current row
+  *@param int c is the current column
+  *@param int count is the move number
+  *@return boolean false if the square is out of bounds or already has a number
+  *                true if a move is possible
+  */
+  public boolean makeMove2(int r, int c, int count){
+    if(r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
+    if(board[r][c] != 0) return false;
+    board[r][c] = count;
+    for(int i = 0; i < board.length; i++){
+      for(int y = 0; y < board[i].length; y++){
+        possMoves(i, y);
+        sort(i, y, opt[i][y].move);
+      }
+    }
+    return true;
+  }
+
   /**A helping method that removes a move for the knight
   *it unmarks the square on the board with a 0
   *@param int r is the current row
@@ -237,6 +290,26 @@ public class KnightBoard{
     if(r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
     if(board[r][c] == 0) return false;
     board[r][c] = 0;
+    return true;
+  }
+
+  /**A helping method that removes a move for the knight for an optimized board
+  *it unmarks the square on the board with a 0
+  *@param int r is the current row
+  *@param int c is the current column
+  *@return boolean false if the square is out of bounds or doesn't have a number (is 0)
+  *                true if unmarking is possible
+  */
+  public boolean undoMove2(int r, int c){
+    if(r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
+    if(board[r][c] == 0) return false;
+    board[r][c] = 0;
+    for(int i = 0; i < board.length; i++){
+      for(int y = 0; y < board[i].length; y++){
+        possMoves(i, y);
+        sort(i, y, opt[i][y].move);
+      }
+    }
     return true;
   }
 
@@ -302,6 +375,14 @@ public class KnightBoard{
     return false;
   }
 
+  /**A method for solving a knight board and labels the placing, with optimization
+  *should work on boards where the number of squares is under 100
+  *@param int startRow
+  *@param int startCol
+  *@return boolean if the board can be solved or not
+  *@throws IllegalArgumentException if the starting position is out of bounds
+  *@throws IllegalStateException if the board is not empty
+  */
   public boolean solve2(int startRow, int startCol){
     if((startRow < 0 || startRow >= board.length) ||
        (startCol < 0 || startCol >= board[0].length)){
@@ -313,26 +394,22 @@ public class KnightBoard{
     return solveH2(startRow, startCol, 1); //calls to helper method
   }
 
+  /**A helper recursive method for solving a knight board and labels the placing, with optimization
+  *@param int r is the current row
+  *@param int c is the current column
+  *@param int count is the move number
+  *@return boolean if the board can be solved or not
+  */
   private boolean solveH2(int r, int c, int count){
     if(count > (board.length*board[0].length)) return true; //if all the squares are filled
-    for(int i = 0; i < board.length; i++){
-      for(int y = 0; y < board[i].length; y++){
-        possMoves(i, y);
-      }
-    }
     for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
-      if(makeMove(r, c, count)){
+      if(makeMove2(r, c, count)){
         //if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
         int[] temp = opt[r][c].move.get(i);
         if(solveH(temp[0], temp[1], count+1)){
           return true;
         }
-        undoMove(r, c); //undo the move if it won't reach a solution
-        for(int x = 0; i < board.length; x++){
-          for(int y = 0; y < board[i].length; y++){
-            possMoves(x, y);
-          }
-        }
+        undoMove2(r, c); //undo the move if it won't reach a solution
       }
     }
     return false;
