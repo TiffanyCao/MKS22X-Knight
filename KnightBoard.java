@@ -274,6 +274,7 @@ public class KnightBoard{
 
   /**A helping method that makes a move for the knight for an optimized board
   *it marks the square on the board with the move number
+  *this method also updates the moves possible and number of moves for each square
   *@param int r is the current row
   *@param int c is the current column
   *@param int count is the move number
@@ -284,7 +285,7 @@ public class KnightBoard{
     if(r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
     if(board[r][c] != 0) return false;
     board[r][c] = count;
-    for(int i = 0; i < board.length; i++){
+    for(int i = 0; i < board.length; i++){ //updates board
       for(int y = 0; y < board[i].length; y++){
         possMoves(i, y);
         sort(i, y, opt[i][y].move);
@@ -295,6 +296,7 @@ public class KnightBoard{
 
   /**A helping method that removes a move for the knight for an optimized board
   *it unmarks the square on the board with a 0
+  *this method also updates the moves possible and number of moves for each square
   *@param int r is the current row
   *@param int c is the current column
   *@return boolean false if the square is out of bounds or doesn't have a number (is 0)
@@ -304,7 +306,7 @@ public class KnightBoard{
     if(r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
     if(board[r][c] == 0) return false;
     board[r][c] = 0;
-    for(int i = 0; i < board.length; i++){
+    for(int i = 0; i < board.length; i++){ //updates board
       for(int y = 0; y < board[i].length; y++){
         possMoves(i, y);
         sort(i, y, opt[i][y].move);
@@ -345,7 +347,7 @@ public class KnightBoard{
   *@throws IllegalArgumentException if the starting position is out of bounds
   *@throws IllegalStateException if the board is not empty
   */
-  public boolean solve(int startRow, int startCol){
+  public boolean solve0(int startRow, int startCol){
     if((startRow < 0 || startRow >= board.length) ||
        (startCol < 0 || startCol >= board[0].length)){
       throw new IllegalArgumentException();
@@ -383,13 +385,17 @@ public class KnightBoard{
   *@throws IllegalArgumentException if the starting position is out of bounds
   *@throws IllegalStateException if the board is not empty
   */
-  public boolean solve2(int startRow, int startCol){
+  public boolean solve(int startRow, int startCol){
     if((startRow < 0 || startRow >= board.length) ||
        (startCol < 0 || startCol >= board[0].length)){
       throw new IllegalArgumentException();
     }
     if(!isEmpty()){ //if the board is not empty
       throw new IllegalStateException();
+    }
+    if(board.length*board[0].length == 1){ //if the board is 1X1
+      board[startRow][startCol] = 1;
+      return true;
     }
     return solveH2(startRow, startCol, 1); //calls to helper method
   }
@@ -402,14 +408,14 @@ public class KnightBoard{
   */
   private boolean solveH2(int r, int c, int count){
     if(count > (board.length*board[0].length)) return true; //if all the squares are filled
-    if(board[r][c] != 0) return false;
+    if(board[r][c] != 0) return false; //if a knight can't be placed
     //possMoves(r, c);
     //sort(r, c, opt[r][c].move);
     for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
-      makeMove(r, c, count);
+      makeMove(r, c, count); //places the knight
       //if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
-      int[] temp = opt[r][c].move.get(i);
-      if(solveH2(temp[0], temp[1], count+1)){
+      int[] temp = opt[r][c].move.get(i); //get the next coordinate
+      if(solveH2(temp[0], temp[1], count+1)){ //tests the coordinate
         return true;
       }
       undoMove(r, c); //undo the move if it won't reach a solution
@@ -425,7 +431,7 @@ public class KnightBoard{
   *@param int startCol
   *@return the number of solutions from the starting position specified
   */
-  public int countSolutions(int startRow, int startCol){
+  public int countSolutions0(int startRow, int startCol){
     if(!isEmpty()) throw new IllegalStateException();
     if((startRow < 0 || startRow >= board.length) ||
        (startCol < 0 || startCol >= board[0].length)){
@@ -454,26 +460,41 @@ public class KnightBoard{
     return solutions;
   }
 
-
-  public int countSolutions2(int startRow, int startCol){
+  /**A method that counts the number of possible solutions of knight board from a given starting position using optimization
+  *@throws IllegalStateException when the board contains non-zero values.
+  *@throws IllegalArgumentException when either parameter is negative
+  *or out of bounds.
+  *@param int startRow
+  *@param int startCol
+  *@return the number of solutions from the starting position specified
+  */
+  public int countSolutions(int startRow, int startCol){
     if(!isEmpty()) throw new IllegalStateException();
     if((startRow < 0 || startRow >= board.length) ||
        (startCol < 0 || startCol >= board[0].length)){
       throw new IllegalArgumentException();
     }
     if(!isEmpty()) throw new IllegalStateException(); //if the board is not empty
-    return countH2(startRow, startCol, 1); //calls to helper method
+    board[startRow][startCol] = 1; //places first knight
+    return countH2(startRow, startCol, 2); //calls to helper method
   }
 
+  /**A recursive helper method that counts all the possible knight board solutions,
+  *starting from the given position, using optimization
+  *@param int r is current row
+  *@param int c is the current column
+  *@param int count is the move number
+  *@return int the number of solutions
+  */
   private int countH2(int r, int c, int count){
     int solutions = 0; //counting the number of solutions
-    if(board[r][c] != 0) return 0;
     if(count > (board.length*board[0].length)) return 1; //if all spaces are filled, that counts as a solution
-    for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
-      makeMove(r, c, count);
-        int[] temp = opt[r][c].move.get(i);
+    for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves from this square
+      int[] temp = opt[r][c].move.get(i); //gets the coordinate
+      if(makeMove(temp[0], temp[1], count)){ //tests if knight can be placed on square
         solutions += countH2(temp[0], temp[1], count+1); //adds 1 if there's a solution, 0 otherwise
-        undoMove(r, c); //undo the move for the testing the next possible move pattern
+        undoMove(temp[0], temp[1]); //undo the move for the testing the next possible move pattern
+      }
     }
     return solutions;
   }
@@ -502,10 +523,10 @@ public class KnightBoard{
     */
 
     KnightBoard test = new KnightBoard(4, 3);
-    test.solve(0, 0);
+    test.solve0(0, 0);
     System.out.println(test);
     test.reset();
-    System.out.println(test.solve2(0,0));
+    System.out.println(test.solve(0,0));
     System.out.println(test);
     System.out.println(test.optM(test.opt[0][0].move));
     System.out.println(test.opt[0][0].move.size());
@@ -519,10 +540,10 @@ public class KnightBoard{
     System.out.println(test.optM(test.opt[2][1].move));
 
     KnightBoard test2 = new KnightBoard(5, 5);
-    test2.solve(0, 0);
+    test2.solve0(0, 0);
     System.out.println(test2);
     test2.reset();
-    System.out.println(test2.solve2(0, 0));
+    System.out.println(test2.solve(0, 0));
     System.out.println(test2);
 
 
