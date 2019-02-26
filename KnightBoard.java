@@ -454,7 +454,7 @@ public class KnightBoard{
     return solutions;
   }
 
-/*
+
   public int countSolutions2(int startRow, int startCol){
     if(!isEmpty()) throw new IllegalStateException();
     if((startRow < 0 || startRow >= board.length) ||
@@ -467,21 +467,17 @@ public class KnightBoard{
 
   private int countH2(int r, int c, int count){
     int solutions = 0; //counting the number of solutions
-    for(int i = 0; i < board.length; i++){
-      for(int y = 0; y < board[i].length; y++){
-        possMoves(i, y);
-      }
-    }
+    if(board[r][c] != 0) return 0;
     if(count > (board.length*board[0].length)) return 1; //if all spaces are filled, that counts as a solution
     for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
-      if(makeMove(r, c, count)){
-        solutions += countH2(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1); //adds 1 if there's a solution, 0 otherwise
+      makeMove(r, c, count);
+        int[] temp = opt[r][c].move.get(i);
+        solutions += countH2(temp[0], temp[1], count+1); //adds 1 if there's a solution, 0 otherwise
         undoMove(r, c); //undo the move for the testing the next possible move pattern
-      }
     }
     return solutions;
   }
-*/
+
 
   public static void main(String[] args){
     /*KnightBoard b1 = new KnightBoard(8, 8);
@@ -529,7 +525,8 @@ public class KnightBoard{
     System.out.println(test2.solve2(0, 0));
     System.out.println(test2);
 
-    
+
+
   }
 
 }
