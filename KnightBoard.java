@@ -402,19 +402,17 @@ public class KnightBoard{
   */
   private boolean solveH2(int r, int c, int count){
     if(count > (board.length*board[0].length)) return true; //if all the squares are filled
+    if(board[r][c] != 0) return false;
     possMoves(r, c);
     sort(r, c, opt[r][c].move);
     for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
-      if(makeMove(r, c, count)){
-        //if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
-        int[] temp = opt[r][c].move.get(i);
-        if(solveH2(temp[0], temp[1], count+1)){
-          return true;
-        }
-        undoMove(r, c); //undo the move if it won't reach a solution
-        possMoves(r, c);
-        sort(r, c, opt[r][c].move);
+      makeMove(r, c, count);
+      //if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
+      int[] temp = opt[r][c].move.get(i);
+      if(solveH2(temp[0], temp[1], count+1)){
+        return true;
       }
+      undoMove(r, c); //undo the move if it won't reach a solution
     }
     return false;
   }
@@ -486,7 +484,7 @@ public class KnightBoard{
 */
 
   public static void main(String[] args){
-    KnightBoard b1 = new KnightBoard(8, 8);
+    /*KnightBoard b1 = new KnightBoard(8, 8);
     System.out.println(b1.optBoard());
     System.out.println(b1.opt[4][2].move);
 
@@ -504,6 +502,11 @@ public class KnightBoard{
 
     KnightBoard b6 = new KnightBoard(3, 3);
     System.out.println(b6.optBoard());
+    */
+
+    KnightBoard test = new KnightBoard(5, 5);
+    System.out.println(test.solve2(0, 0));
+    System.out.println(test);
   }
 
 }
