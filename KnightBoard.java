@@ -153,7 +153,7 @@ public class KnightBoard{
     for(int i = 1; i < l.size(); i++){ //loops through list
       int[] temp = l.get(index);
       int[] temp2 = l.get(i);
-      if(opt[temp2[0]][temp2[1]].optOriginal < opt[temp[0]][temp[1]].optOriginal){
+      if(opt[temp2[0]][temp2[1]].numMoves < opt[temp[0]][temp[1]].numMoves){
         index = i; //if the number of moves at the resulting square of this move is smaller than the number of moves
                    //at the resulting square of the move at the previous index
       }
@@ -402,14 +402,18 @@ public class KnightBoard{
   */
   private boolean solveH2(int r, int c, int count){
     if(count > (board.length*board[0].length)) return true; //if all the squares are filled
+    possMoves(r, c);
+    sort(r, c, opt[r][c].move);
     for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
-      if(makeMove2(r, c, count)){
+      if(makeMove(r, c, count)){
         //if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
         int[] temp = opt[r][c].move.get(i);
         if(solveH2(temp[0], temp[1], count+1)){
           return true;
         }
-        undoMove2(r, c); //undo the move if it won't reach a solution
+        undoMove(r, c); //undo the move if it won't reach a solution
+        possMoves(r, c);
+        sort(r, c, opt[r][c].move);
       }
     }
     return false;
