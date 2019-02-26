@@ -403,8 +403,8 @@ public class KnightBoard{
   private boolean solveH2(int r, int c, int count){
     if(count > (board.length*board[0].length)) return true; //if all the squares are filled
     if(board[r][c] != 0) return false;
-    possMoves(r, c);
-    sort(r, c, opt[r][c].move);
+    //possMoves(r, c);
+    //sort(r, c, opt[r][c].move);
     for(int i = 0; i < opt[r][c].move.size(); i++){ //loops through all possible moves
       makeMove(r, c, count);
       //if(solveH(r + moves[opt[r][c].move.get(i)][0], c + moves[opt[r][c].move.get(i)][1], count+1)){ //if move is possible, check next move
@@ -495,7 +495,8 @@ public class KnightBoard{
     System.out.println(b3.optBoard());
 
     KnightBoard b4 = new KnightBoard(5, 5);
-    System.out.println(b4.optBoard());
+    System.out.println(b4.optBoard());2  9
+
 
     KnightBoard b5 = new KnightBoard(3, 4);
     System.out.println(b5.optBoard());
@@ -504,9 +505,31 @@ public class KnightBoard{
     System.out.println(b6.optBoard());
     */
 
-    KnightBoard test = new KnightBoard(5, 5);
-    System.out.println(test.solve2(0, 0));
+    KnightBoard test = new KnightBoard(4, 3);
+    test.solve(0, 0);
     System.out.println(test);
+    test.reset();
+    System.out.println(test.solve2(0,0));
+    System.out.println(test);
+    System.out.println(test.optM(test.opt[0][0].move));
+    System.out.println(test.opt[0][0].move.size());
+    System.out.println(test.optM(test.sort(0, 0, test.opt[0][0].move)));
+    test.makeMove(0, 0, 1);
+    System.out.println(test);
+    int[] temp = test.opt[0][0].move.get(0);
+    System.out.println("" + temp[0] + " " + temp[1]);
+    test.possMoves(2, 1);
+    test.sort(2, 1, test.opt[2][1].move);
+    System.out.println(test.optM(test.opt[2][1].move));
+
+    KnightBoard test2 = new KnightBoard(5, 5);
+    test2.solve(0, 0);
+    System.out.println(test2);
+    test2.reset();
+    System.out.println(test2.solve2(0, 0));
+    System.out.println(test2);
+
+    
   }
 
 }
