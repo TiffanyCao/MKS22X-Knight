@@ -25,9 +25,9 @@ public class KnightBoard{
     makeZero(); //make all 0's
     opt = new Optimize[startingRows][startingCols];
     optimize(); //fill in the number of moves possible for each square
-    for(int i = 0; i < opt.length; i++){
-      for(int y = 0; y < opt[i].length; y++){
-        sort(i, y, opt[i][y].move); //makes all the lists in order of closest to farthest from edge
+    for(int i = 0; i < board.length; i++){
+      for(int y = 0; y < board[i].length; y++){
+        insertionSort(i, y, opt[i][y].move); //sorts list of coordinates
       }
     }
   }
@@ -50,7 +50,7 @@ public class KnightBoard{
       for(int y = 0; y < board[i].length; y++){
         opt[i][y].numMoves = opt[i][y].optOriginal;
         possMoves(i, y);
-        sort(i, y, opt[i][y].move);
+        insertionSort(i, y, opt[i][y].move);
       }
     }
   }
@@ -63,41 +63,7 @@ public class KnightBoard{
     for(int i = 0; i < row; i++){ //initialize the opt board
       for(int y = 0; y < col; y++){
         opt[i][y] = new Optimize();
-      }
-    }
-    if(row == col && row > 3){ //shortcut to optimizing board if the board is square and greater than a 3x3
-      for(int i = 0; i < opt.length; i++){
-        for(int y = 0; y < opt[i].length; y++){
-          if((i == 0 || i == row - 1) && (y == 0 || y == col - 1)){ //the squares with 2 moves
-            opt[i][y].numMoves = 2;
-            opt[i][y].optOriginal = 2;
-            possMoves(i, y);
-          }else if(((i == 0  || i == row - 1) && (y == 1 || y == col - 2)) ||
-                   ((i == 1 || i == row - 2) && (y == 0 || y == col - 1))){ //the squares with 3 moves
-            opt[i][y].numMoves = 3;
-            opt[i][y].optOriginal = 3;
-            possMoves(i, y);
-          }else if((i == 0 || i == row - 1 || y == 0 || y == col - 1) ||
-                   ((i == 1 || i == row - 2) && (y == 1 || y == col - 2))){ //the squares with 3 moves
-            opt[i][y].numMoves = 4;
-            opt[i][y].optOriginal = 4;
-            possMoves(i, y);
-          }else if(i == 1 || i == row - 2 || y == 1 || y == col - 2){ //the squares with 4 moves
-            opt[i][y].numMoves = 6;
-            opt[i][y].optOriginal = 6;
-            possMoves(i, y);
-          }else{ //the rest of the squares have 8 moves
-            opt[i][y].numMoves = 8;
-            opt[i][y].optOriginal = 8;
-            possMoves(i, y);
-          }
-        }
-      }
-    }else{ //all the other boards use this
-      for(int i = 0; i < opt.length; i++){
-        for(int y = 0; y < opt[i].length; y++){
-          opt[i][y].optOriginal = possMoves(i, y); //finds all possible moves
-        }
+        possMoves(i, y); //calculates number of moves
       }
     }
   }
@@ -122,6 +88,7 @@ public class KnightBoard{
     }
     opt[r][c].move = m;
     opt[r][c].numMoves = count;
+    opt[r][c].optOriginal = count;
     return count;
   }
 
@@ -159,6 +126,27 @@ public class KnightBoard{
       }
     }
     return index; //returns the index of the move that will bring the knight closest to the edge
+  }
+
+  /**Applying insertion sort to sorting the list of coordinates based on their outgoing moves
+  *@param int r is the row of the square
+  *@param int c is the column of the square
+  *@param ArrayList<int[]> l is the list of coordinates (possible moves) from that sqaure
+  */
+  public void insertionSort(int r, int c, ArrayList<int[]> l){
+    for(int i = 1; i < l.size(); i++){
+      int x; //current index
+      int[] tempTest = l.get(i); //value at the index being tested
+      for(x = i-1; (x >= 0) && (opt[tempTest[0]][tempTest[1]].numMoves < opt[getIndex(x, l)[0]][getIndex(x, l)[1]].numMoves); x--){ //if the value being tested is smaller than the values of the indexes before it
+          l.set(x+1, getIndex(x, l)); //the larger values at the previous indexes shift right
+      }
+      l.set(x+1, tempTest); //when the value is at the correct index
+    }
+    opt[r][c].move = l;
+  }
+
+  public int[] getIndex(int index, ArrayList<int[]> l){
+    return l.get(index);
   }
 
   /**A method that prints out the ArrayList<int[]> based on which square is given
@@ -522,6 +510,7 @@ public class KnightBoard{
     System.out.println(b6.optBoard());
     */
 
+    /*
     KnightBoard test = new KnightBoard(4, 3);
     test.solve0(0, 0);
     System.out.println(test);
@@ -545,7 +534,31 @@ public class KnightBoard{
     test2.reset();
     System.out.println(test2.solve(0, 0));
     System.out.println(test2);
+    */
 
+    KnightBoard a = new KnightBoard(5, 5);
+    System.out.println(a.optBoard());
+    System.out.println(a.optM(a.opt[2][3].move));
+    a.insertionSort(2, 3, a.opt[2][3].move);
+    System.out.println(a.optM(a.opt[2][3].move));
+    System.out.println(a.optM(a.sort(2, 3, a.opt[2][3].move)));
+
+    System.out.println(a.optBoard());
+    System.out.println(a.optM(a.opt[3][3].move));
+    a.insertionSort(3, 3, a.opt[3][3].move);
+    System.out.println(a.optM(a.opt[3][3].move));
+    System.out.println(a.optM(a.sort(3, 3, a.opt[3][3].move)));
+
+    KnightBoard b = new KnightBoard(8, 8);
+    System.out.println(b.optBoard());
+    System.out.println(b.optM(b.opt[4][4].move));
+    b.insertionSort(4, 4, b.opt[4][4].move);
+    System.out.println(b.optM(b.opt[4][4].move));
+    System.out.println(b.optM(b.sort(4, 4, b.opt[4][4].move)));
+    b.board[1][2] = 5;
+    System.out.println(b);
+    b.reset();
+    System.out.println(b);
 
 
   }
