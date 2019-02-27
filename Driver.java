@@ -179,6 +179,15 @@ public class Driver{
       test.reset();
       System.out.println(test.countSolutions(0, 0));
     }
+
+    KnightBoard test = new KnightBoard(4, 6);
+    System.out.println(test.solve0(0, 0));
+    System.out.println(test);
+    test.reset();
+    System.out.println(test.solve(0, 0));
+    System.out.println(test);
+    test.reset();
+    System.out.println(test.countSolutions(0, 0));
 }
     //testcase must be a valid index of your input/output array
     public static void runTest(int i){
