@@ -4,13 +4,13 @@ public class Driver{
     System.out.println("---Testing Solve---");
     System.out.println("*printing 5x5 board:");
     System.out.println(k);
-    System.out.println("\n*testing solve(0, 0): should return true");
-    System.out.println(k.solve(0, 0));
+    System.out.println("\n*testing solve0(0, 0): should return true");
+    System.out.println(k.solve0(0, 0));
     System.out.println(k);
     k.reset();
 
-    System.out.println("\n*testing solve(4, 4): should return true");
-    System.out.println(k.solve(4, 4));
+    System.out.println("\n*testing solve0(4, 4): should return true");
+    System.out.println(k.solve0(4, 4));
     System.out.println(k);
     k.reset();
 
@@ -31,28 +31,28 @@ public class Driver{
     KnightBoard eight = new KnightBoard(8, 4);
 
     /*System.out.println("*printing 1x1:\n" + one);
-    System.out.println("*printing solve(0,0):\n" + one.solve(0,0));
+    System.out.println("*printing solve0(0,0):\n" + one.solve0(0,0));
     System.out.println(one);
     System.out.println("*printing 2x4:\n" + two);
-    System.out.println("*printing solve(0,0):\n" + two.solve(0,0));
+    System.out.println("*printing solve0(0,0):\n" + two.solve0(0,0));
     System.out.println(two);
     System.out.println("*printing 3x3:\n" + three);
-    System.out.println("*printing solve(0,0):\n" + three.solve(0,0));
+    System.out.println("*printing solve0(0,0):\n" + three.solve0(0,0));
     System.out.println(three);
     System.out.println("*printing 4x6:\n" + four);
-    System.out.println("*printing solve(0,0):\n" + four.solve(0,0));
+    System.out.println("*printing solve0(0,0):\n" + four.solve0(0,0));
     System.out.println(four);
     System.out.println("*printing 5x5:\n" + five);
-    System.out.println("*printing solve(0,0):\n" + five.solve(0,0));
+    System.out.println("*printing solve0(0,0):\n" + five.solve0(0,0));
     System.out.println(five);
     System.out.println("*printing 6x3:\n" + six);
-    System.out.println("*printing solve(0,0):\n" + six.solve(0,0));
+    System.out.println("*printing solve0(0,0):\n" + six.solve0(0,0));
     System.out.println(six);
     System.out.println("*printing 7x10:\n" + seven);
-    System.out.println("*printing solve(0,0):\n" + seven.solve(0,0));
+    System.out.println("*printing solve0(0,0):\n" + seven.solve0(0,0));
     System.out.println(seven);
     System.out.println("*printing 8x4:\n" + eight);
-    System.out.println("*printing solve(0,0):\n" + eight.solve(0,0));
+    System.out.println("*printing solve0(0,0):\n" + eight.solve0(0,0));
     System.out.println(eight);
 
     one.reset();
@@ -123,50 +123,61 @@ public class Driver{
     System.out.println(four);
     System.out.println(four.optBoard());
     System.out.println(four.optM(four.opt[0][0].move));
-    System.out.println(four.solve2(0, 0));
+    System.out.println(four.solve(0, 0));
     System.out.println(four);
-    four.solve(0, 0);
+    four.solve0(0, 0);
     System.out.println(four);
     System.out.println(four.optBoard());
     System.out.println(four.optM(four.opt[0][0].move));
 
     System.out.println(five);
     System.out.println(five.optM(0, 0));
-    System.out.println(five.solve2(0, 0));
+    System.out.println(five.solve(0, 0));
     System.out.println(five);
-    five.solve(0, 0);
+    five.solve0(0, 0);
     System.out.println(five);
     System.out.println(five.optBoard());
     System.out.println(five.optM(0, 0));
 
     System.out.println("*printing 1x1:\n" + one);
-    System.out.println("*printing solve(0,0):\n" + one.solve2(0,0));
+    System.out.println("*printing solve(0,0):\n" + one.solve(0,0));
     System.out.println(one);
     System.out.println("*printing 2x4:\n" + two);
-    System.out.println("*printing solve(0,0):\n" + two.solve2(0,0));
+    System.out.println("*printing solve(0,0):\n" + two.solve(0,0));
     System.out.println(two);
     System.out.println("*printing 3x3:\n" + three);
-    System.out.println("*printing solve(0,0):\n" + three.solve2(0,0));
+    System.out.println("*printing solve(0,0):\n" + three.solve(0,0));
     System.out.println(three);
     System.out.println("*printing 4x6:\n" + four);
-    System.out.println("*printing solve(0,0):\n" + four.solve2(0,0));
+    System.out.println("*printing solve(0,0):\n" + four.solve(0,0));
     System.out.println(four);
     System.out.println("*printing 5x5:\n" + five);
-    System.out.println("*printing solve(0,0):\n" + five.solve2(0,0));
+    System.out.println("*printing solve(0,0):\n" + five.solve(0,0));
     System.out.println(five);
     System.out.println("*printing 6x3:\n" + six);
-    System.out.println("*printing solve(0,0):\n" + six.solve2(0,0));
+    System.out.println("*printing solve(0,0):\n" + six.solve(0,0));
     System.out.println(six);
     //System.out.println("*printing 7x10:\n" + seven);
-    //System.out.println("*printing solve(0,0):\n" + seven.solve2(0,0));
+    //System.out.println("*printing solve(0,0):\n" + seven.solve(0,0));
     //System.out.println(seven);
     System.out.println("*printing 8x4:\n" + eight);
-    System.out.println("*printing solve(0,0):\n" + eight.solve2(0,0));
+    System.out.println("*printing solve(0,0):\n" + eight.solve(0,0));
     System.out.println(eight);
 */
 
     for(int i = 0; i < 5; i++){
       runTest(i);
+    }
+
+    for(int i = 1; i < 6; i++){
+      KnightBoard test = new KnightBoard(i, i);
+      System.out.println(test.solve0(0, 0));
+      System.out.println(test);
+      test.reset();
+      System.out.println(test.solve(0, 0));
+      System.out.println(test);
+      test.reset();
+      System.out.println(test.countSolutions(0, 0));
     }
 }
     //testcase must be a valid index of your input/output array
@@ -196,5 +207,7 @@ public class Driver{
       }
     }
   }
+
+
 
 }
